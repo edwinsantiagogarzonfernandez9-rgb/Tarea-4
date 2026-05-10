@@ -5,10 +5,12 @@ from tkinter import ttk, messagebox
 from excepciones import CedulaInvalidaError, CampoVacioError, CedulaDuplicadaError
 from logger import registrar_log, guardar_servicio_en_log, cargar_servicios_desde_log
 
+
 class Servicio:
     def __init__(self, nombre, precio):
         self._nombre = nombre
         self._precio = precio
+
     @property
     def nombre(self): return self._nombre
     @property
@@ -19,40 +21,41 @@ class ServicioApp():
     def __init__(self):
         self.servicios = {}
         self.loop = tk.Tk()
-        self.loop.title("Servicios")
+        self.loop.title("Software FJ - Servicios")
         self.loop.geometry("400x400")
         self.loop.resizable(False, False)
         self.loop.configure(bg="#36506A")
         self.loop.attributes("-alpha", 0.95)
-        tk.Button(self.loop, text="← Volver", font=("Segoe UI", 10),
+
+        tk.Button(self.loop, text="← Volver", font=("Arial", 10),
                   bg="#7A3535", fg="#FFFFFF", command=self.volver
                   ).grid(row=0, column=0, padx=10, pady=10, sticky="w")
 
-
         tk.Label(self.loop, text="Registro de Servicios",
-                 font=("Segoe UI", 16, "bold"), bg="#36506A", fg="#FFFFFF"
+                 font=("Arial", 20, "bold"), bg="#36506A", fg="#FFFFFF"
                  ).grid(row=1, column=0, columnspan=2, pady=20)
 
-        tk.Label(self.loop, text="Nombre:", font=("Segoe UI", 10),
+        tk.Label(self.loop, text="Nombre:", font=("Arial", 15),
                  bg="#36506A", fg="#FFFFFF").grid(row=2, column=0, padx=10, pady=10, sticky="e")
-        self.nombre_entry_entry = tk.Entry(self.loop, font=("Segoe UI", 10), bg="#FFFFFF", fg="#000000")
+        self.nombre_entry_entry = tk.Entry(self.loop, font=("Arial", 15), bg="#FFFFFF", fg="#000000")
         self.nombre_entry_entry.grid(row=2, column=1, padx=10, pady=10, sticky="w")
 
-        tk.Label(self.loop, text="Precio:", font=("Segoe UI", 10),
+        tk.Label(self.loop, text="Precio:", font=("Arial", 15),
                  bg="#36506A", fg="#FFFFFF").grid(row=3, column=0, padx=10, pady=10, sticky="e")
-        self.precio_entry = tk.Entry(self.loop, font=("Segoe UI", 10), bg="#FFFFFF", fg="#000000")
+        self.precio_entry = tk.Entry(self.loop, font=("Arial", 15), bg="#FFFFFF", fg="#000000")
         self.precio_entry.grid(row=3, column=1, padx=10, pady=10, sticky="w")
-        tk.Button(self.loop, text="Registrar", font=("Segoe UI", 10, "bold"),
+
+        tk.Button(self.loop, text="Registrar", font=("Arial", 15, "bold"),
                   bg="#455B46", fg="#FFFFFF", command=self.registrar_servicio
                   ).grid(row=4, column=1, pady=10)
 
         self.tabla = ttk.Treeview(self.loop,
                                   columns=("Nombre", "Precio"),
                                   show="headings")
-        self.tabla.heading("Nombre",   text="Nombre")
-        self.tabla.heading("Precio",   text="Precio")
-        self.tabla.column("Nombre",   width=180)
-        self.tabla.column("Precio",   width=150)
+        self.tabla.heading("Nombre", text="Nombre")
+        self.tabla.heading("Precio", text="Precio")
+        self.tabla.column("Nombre",  width=180)
+        self.tabla.column("Precio",  width=150)
         self.tabla.grid(row=5, column=0, columnspan=2, padx=10, pady=10)
 
         self._cargar_servicios_guardados()
@@ -62,9 +65,9 @@ class ServicioApp():
         for nombre, precio in cargar_servicios_desde_log():
             try:
                 servicio = (nombre, precio)
-                self.servicios[servicio[0]] = servicio
+                self.servicios[nombre] = servicio
                 self.tabla.insert("", END, values=servicio)
-            except CedulaInvalidaError:
+            except (CedulaInvalidaError, ValueError):
                 pass
 
     def registrar_servicio(self):
@@ -74,6 +77,14 @@ class ServicioApp():
 
             if not nombre or not precio:
                 raise CampoVacioError("Todos los campos son obligatorios.")
+
+            if nombre in self.servicios:
+                raise CedulaDuplicadaError(f"Ya existe un servicio con el nombre '{nombre}'.")
+
+            if precio.count(".") > 1:
+                raise ValueError("El precio no puede tener más de un punto decimal.")
+            if not precio.replace(".", "", 1).isdigit() or float(precio) <= 0:
+                raise ValueError("El precio debe ser un número positivo.")
 
             servicio = Servicio(nombre, float(precio))
             self.servicios[servicio.nombre] = servicio
@@ -88,9 +99,10 @@ class ServicioApp():
 
             self.tabla.insert("", END, values=(servicio.nombre, servicio.precio))
 
-        except (CedulaInvalidaError, CampoVacioError, CedulaDuplicadaError) as e:
+        except (CampoVacioError, CedulaDuplicadaError, ValueError) as e:
             registrar_log(f"ERROR: {e}")
             messagebox.showerror("Error", str(e))
+
     def volver(self):
         self.loop.destroy()
         from main import Main

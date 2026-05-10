@@ -51,38 +51,38 @@ class ClienteApp():
         self.repositorio = Repositorio()
 
         self.loop = tk.Tk()
-        self.loop.title("Registro de Clientes")
+        self.loop.title("Software FJ - Clientes")
         self.loop.geometry("500x400")
         self.loop.resizable(False, False)
         self.loop.configure(bg="#36506A")
         self.loop.attributes("-alpha", 0.95)
 
-        tk.Button(self.loop, text="← Volver", font=("Segoe UI", 10),
+        tk.Button(self.loop, text="← Volver", font=("Arial", 10),
                   bg="#7A3535", fg="#FFFFFF", command=self.volver
                   ).grid(row=0, column=0, padx=10, pady=10, sticky="w")
 
         tk.Label(self.loop, text="Registro de Clientes",
                  font=("Arial", 18, "bold"), bg="#36506A", fg="#FFFFFF"
-                 ).grid(row=0, column=0, columnspan=2, pady=20)
+                 ).grid(row=1, column=0, columnspan=2, pady=20)
 
         tk.Label(self.loop, text="Cédula:", font=("Arial", 15),
-                 bg="#36506A", fg="#FFFFFF").grid(row=1, column=0, padx=10, pady=10, sticky="e")
+                 bg="#36506A", fg="#FFFFFF").grid(row=2, column=0, padx=10, pady=10, sticky="e")
         self.cedula_entry = tk.Entry(self.loop, font=("Arial", 15), bg="#FFFFFF", fg="#000000")
-        self.cedula_entry.grid(row=1, column=1, padx=10, pady=10, sticky="w")
+        self.cedula_entry.grid(row=2, column=1, padx=10, pady=10, sticky="w")
 
         tk.Label(self.loop, text="Nombre:", font=("Arial", 15),
-                 bg="#36506A", fg="#FFFFFF").grid(row=2, column=0, padx=10, pady=10, sticky="e")
+                 bg="#36506A", fg="#FFFFFF").grid(row=3, column=0, padx=10, pady=10, sticky="e")
         self.nombre_entry = tk.Entry(self.loop, font=("Arial", 15), bg="#FFFFFF", fg="#000000")
-        self.nombre_entry.grid(row=2, column=1, padx=10, pady=10, sticky="w")
+        self.nombre_entry.grid(row=3, column=1, padx=10, pady=10, sticky="w")
 
         tk.Label(self.loop, text="Teléfono:", font=("Arial", 15),
-                 bg="#36506A", fg="#FFFFFF").grid(row=3, column=0, padx=10, pady=10, sticky="e")
+                 bg="#36506A", fg="#FFFFFF").grid(row=4, column=0, padx=10, pady=10, sticky="e")
         self.telefono_entry = tk.Entry(self.loop, font=("Arial", 15), bg="#FFFFFF", fg="#000000")
-        self.telefono_entry.grid(row=3, column=1, padx=10, pady=10, sticky="w")
+        self.telefono_entry.grid(row=4, column=1, padx=10, pady=10, sticky="w")
 
         tk.Button(self.loop, text="Registrar", font=("Arial", 10, "bold"),
                   bg="#455B46", fg="#FFFFFF", command=self.registrar_cliente
-                  ).grid(row=4, column=1, pady=10)
+                  ).grid(row=5, column=1, pady=10)
 
         self.tabla = ttk.Treeview(self.loop,
                                   columns=("Cédula", "Nombre", "Teléfono"),
@@ -93,7 +93,7 @@ class ClienteApp():
         self.tabla.column("Cédula",   width=150)
         self.tabla.column("Nombre",   width=180)
         self.tabla.column("Teléfono", width=150)
-        self.tabla.grid(row=5, column=0, columnspan=2, padx=10, pady=10)
+        self.tabla.grid(row=6, column=0, columnspan=2, padx=10, pady=10)
 
         self._cargar_clientes_guardados()
         self.loop.mainloop()

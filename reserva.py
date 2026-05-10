@@ -1,7 +1,7 @@
 from tkinter import *
 import tkinter as tk
 from tkinter import ttk, messagebox
-from excepciones import ReservaCanceladaError, CostoInvalidoError, ReservaError
+from excepciones import ReservaCanceladaError, ReservaError
 from logger import registrar_log, cargar_servicios_desde_log, cargar_clientes_desde_log
 
 
@@ -21,13 +21,13 @@ class ReservaApp():
         self.reservas = []
 
         self.loop = tk.Tk()
-        self.loop.title("Gestión de Reservas")
+        self.loop.title("Software FJ - Reservas")
         self.loop.geometry("500x500")
         self.loop.resizable(False, False)
         self.loop.configure(bg="#36506A")
         self.loop.attributes("-alpha", 0.95)
 
-        tk.Button(self.loop, text="← Volver", font=("Segoe UI", 10),
+        tk.Button(self.loop, text="← Volver", font=("Arial", 10),
                   bg="#7A3535", fg="#FFFFFF", command=self.volver
                   ).grid(row=0, column=0, padx=10, pady=10, sticky="w")
 
@@ -107,7 +107,7 @@ class ReservaApp():
             if not cantidad_str.strip():
                 raise ReservaError("La cantidad no puede estar vacía.")
             if not cantidad_str.isdigit() or int(cantidad_str) <= 0:
-                raise ReservaError("La cantidad debe ser un número entero positivo.")
+                raise ValueError("La cantidad debe ser un número entero positivo.")
 
             cantidad = int(cantidad_str)
 
@@ -118,6 +118,7 @@ class ReservaApp():
             registrar_log(f"Reserva creada: Servicio='{reserva.servicio}', Cantidad={reserva.cantidad}, Cliente='{reserva.cliente}'")
 
         except ValueError:
+            registrar_log("ERROR: La cantidad debe ser un número entero.")
             messagebox.showerror("Error", "La cantidad debe ser un número entero.")
         except ReservaError as e:
             registrar_log(f"ERROR ReservaError: {e}")

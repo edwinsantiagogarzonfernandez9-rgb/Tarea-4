@@ -1,4 +1,3 @@
 [2026-05-08 22:21:01] Cliente registrado: ('1055313199', 'santiago', '320999999')
 DATO|1055313199|Santiago|315646546
-[2026-05-09 22:18:07] Cliente registrado: 1055313199 | Santiago | 315646546
-[2026-05-09 22:35:27] Reserva creada: Servicio='Picina', Cantidad=1, Cliente='Santiago'
+[2026-05-09 22:18:07] Cliente registrado: 1055313199 | Santiago | 315646546[2026-05-09 22:56:40] ERROR: El precio debe ser un número positivo.
