@@ -1,28 +1,33 @@
 from tkinter import *
 import tkinter as tk
 from tkinter import ttk, messagebox
-
 from excepciones import CedulaInvalidaError, CampoVacioError, CedulaDuplicadaError, ClienteError
 from logger import registrar_log, guardar_cliente_en_log, cargar_clientes_desde_log
+
 
 class Cliente:
     def __init__(self, cedula, nombre, telefono):
         self._cedula   = self._validar_cedula(cedula)
         self._nombre   = nombre.strip()
         self._telefono = telefono.strip()
+
     def _validar_cedula(self, v):
         v = v.strip()
         if len(v) < 5:
             raise CedulaInvalidaError("La cédula debe tener al menos 5 caracteres.")
         return v
+
     @property
     def cedula(self):    return self._cedula
     @property
     def nombre(self):    return self._nombre
     @property
     def telefono(self):  return self._telefono
+
     def fila(self):
         return (self._cedula, self._nombre, self._telefono)
+
+
 class Repositorio:
     def __init__(self):
         self._datos: dict[str, Cliente] = {}
@@ -37,9 +42,12 @@ class Repositorio:
             raise ClienteError("Cliente no encontrado.")
         del self._datos[cedula]
 
+    def contiene(self, cedula: str) -> bool:
+        return cedula in self._datos
+
+
 class ClienteApp():
     def __init__(self):
-        self.clientes = {}
         self.repositorio = Repositorio()
 
         self.loop = tk.Tk()
@@ -49,7 +57,12 @@ class ClienteApp():
         self.loop.configure(bg="#36506A")
         self.loop.attributes("-alpha", 0.95)
 
-        tk.Label(self.loop, text="Registro de Clientes",font=("Arial", 18 , "bold"), bg="#36506A", fg="#FFFFFF"
+        tk.Button(self.loop, text="← Volver", font=("Segoe UI", 10),
+                  bg="#7A3535", fg="#FFFFFF", command=self.volver
+                  ).grid(row=0, column=0, padx=10, pady=10, sticky="w")
+
+        tk.Label(self.loop, text="Registro de Clientes",
+                 font=("Arial", 18, "bold"), bg="#36506A", fg="#FFFFFF"
                  ).grid(row=0, column=0, columnspan=2, pady=20)
 
         tk.Label(self.loop, text="Cédula:", font=("Arial", 15),
@@ -91,7 +104,7 @@ class ClienteApp():
                 cliente = Cliente(cedula, nombre, telefono)
                 self.repositorio.agregar(cliente)
                 self.tabla.insert("", END, values=cliente.fila())
-            except CedulaInvalidaError:
+            except (CedulaInvalidaError, CedulaDuplicadaError):
                 pass
 
     def registrar_cliente(self):
@@ -103,11 +116,11 @@ class ClienteApp():
             if not cedula or not nombre or not telefono:
                 raise CampoVacioError("Todos los campos son obligatorios.")
 
-            if cedula in self.clientes:
+            if self.repositorio.contiene(cedula):
                 raise CedulaDuplicadaError(f"Ya existe un cliente con cédula {cedula}.")
 
             cliente = Cliente(cedula, nombre, telefono)
-            self.clientes[cliente.cedula] = cliente
+            self.repositorio.agregar(cliente)
 
             guardar_cliente_en_log(cliente.cedula, cliente.nombre, cliente.telefono)
             registrar_log(f"Cliente registrado: {cliente.cedula} | {cliente.nombre} | {cliente.telefono}")
@@ -123,6 +136,11 @@ class ClienteApp():
         except (CedulaInvalidaError, CampoVacioError, CedulaDuplicadaError) as e:
             registrar_log(f"ERROR: {e}")
             messagebox.showerror("Error", str(e))
+
+    def volver(self):
+        self.loop.destroy()
+        from main import Main  
+        Main()
 
 
 if __name__ == "__main__":
