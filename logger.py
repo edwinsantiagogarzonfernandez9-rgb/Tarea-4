@@ -1,24 +1,24 @@
 from datetime import datetime
 import os
 
-log_file = os.path.join(os.path.dirname(__file__), "logs.txt")
+log_file = os.path.join(os.path.dirname(__file__), "logs.txt") # Archivo de log para registrar clientes y servicios
 
 
-def registrar_log(mensaje: str):
+def registrar_log(mensaje: str): # Registra un mensaje en el log con la fecha y hora actual
     hora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     with open(log_file, "a", encoding="utf-8") as f:
         f.write(f"[{hora}] {mensaje}\n")
 
 
-def guardar_cliente_en_log(cedula, nombre, telefono):
+def guardar_cliente_en_log(cedula, nombre, telefono): # Guarda un nuevo cliente en el log con el formato "DATO|cedula|nombre|telefono"
     with open(log_file, "a", encoding="utf-8") as f:
         f.write(f"DATO|{cedula}|{nombre}|{telefono}\n")
-def guardar_servicio_en_log(nombre, precio):
+def guardar_servicio_en_log(nombre, precio): # Guarda un nuevo servicio en el log con el formato "SERVICIO|nombre|precio"
     with open(log_file, "a", encoding="utf-8") as f:
         f.write(f"SERVICIO|{nombre}|{precio}\n")
 
 
-def cargar_clientes_desde_log():
+def cargar_clientes_desde_log(): # Carga los clientes guardados desde el log y los devuelve como una lista de tuplas (cedula, nombre, telefono)
     if not os.path.exists(log_file):
         return []
     clientes = []
@@ -34,7 +34,8 @@ def cargar_clientes_desde_log():
                         vistos.add(cedula)
                         clientes.append((cedula, nombre, telefono))
     return clientes
-def cargar_servicios_desde_log():
+
+def cargar_servicios_desde_log(): # Carga los servicios guardados desde el log y los devuelve como una lista de tuplas (nombre, precio)
     if not os.path.exists(log_file):
         return []
     servicios = []

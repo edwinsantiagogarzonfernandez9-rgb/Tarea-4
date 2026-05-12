@@ -6,7 +6,7 @@ from excepciones import CedulaInvalidaError, CampoVacioError, CedulaDuplicadaErr
 from logger import registrar_log, guardar_servicio_en_log, cargar_servicios_desde_log
 
 
-class Servicio:
+class Servicio: # Representa un servicio con nombre y precio
     def __init__(self, nombre, precio):
         self._nombre = nombre
         self._precio = precio
@@ -17,7 +17,7 @@ class Servicio:
     def precio(self): return self._precio
 
 
-class ServicioApp():
+class ServicioApp(): # Aplicación principal para gestionar servicios
     def __init__(self):
         self.servicios = {}
         self.loop = tk.Tk()
@@ -61,7 +61,7 @@ class ServicioApp():
         self._cargar_servicios_guardados()
         self.loop.mainloop()
 
-    def _cargar_servicios_guardados(self):
+    def _cargar_servicios_guardados(self):# Carga los servicios guardados desde el log y los muestra en la tabla
         for nombre, precio in cargar_servicios_desde_log():
             try:
                 servicio = (nombre, precio)
@@ -70,7 +70,7 @@ class ServicioApp():
             except (CedulaInvalidaError, ValueError):
                 pass
 
-    def registrar_servicio(self):
+    def registrar_servicio(self):# Registra un nuevo servicio con el nombre y precio ingresados, lo agrega a la lista de servicios, lo muestra en la tabla y lo guarda en el log
         try:
             nombre = self.nombre_entry_entry.get().strip()
             precio = self.precio_entry.get().strip()
@@ -103,7 +103,7 @@ class ServicioApp():
             registrar_log(f"ERROR: {e}")
             messagebox.showerror("Error", str(e))
 
-    def volver(self):
+    def volver(self): # Cierra la ventana de servicios y vuelve al menú principal
         self.loop.destroy()
         from main import Main
         Main()

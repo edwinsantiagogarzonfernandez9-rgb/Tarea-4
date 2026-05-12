@@ -5,19 +5,19 @@ from excepciones import CedulaInvalidaError, CampoVacioError, CedulaDuplicadaErr
 from logger import registrar_log, guardar_cliente_en_log, cargar_clientes_desde_log
 
 
-class Cliente:
-    def __init__(self, cedula, nombre, telefono):
+class Cliente: # Representa un cliente con cédula, nombre y teléfono
+    def __init__(self, cedula, nombre, telefono): 
         self._cedula   = self._validar_cedula(cedula)
         self._nombre   = nombre.strip()
         self._telefono = telefono.strip()
 
-    def _validar_cedula(self, v):
+    def _validar_cedula(self, v):# Valida que la cédula tenga al menos 5 caracteres y no esté vacía
         v = v.strip()
         if len(v) < 5:
             raise CedulaInvalidaError("La cédula debe tener al menos 5 caracteres.")
         return v
 
-    @property
+    @property # Obtiene la cédula del cliente
     def cedula(self):    return self._cedula
     @property
     def nombre(self):    return self._nombre
@@ -28,8 +28,8 @@ class Cliente:
         return (self._cedula, self._nombre, self._telefono)
 
 
-class Repositorio:
-    def __init__(self):
+class Repositorio: # Repositorio para almacenar clientes en memoria
+    def __init__(self): 
         self._datos: dict[str, Cliente] = {}
 
     def agregar(self, c: Cliente):
@@ -46,7 +46,7 @@ class Repositorio:
         return cedula in self._datos
 
 
-class ClienteApp():
+class ClienteApp():# Aplicación principal para gestionar clientes
     def __init__(self):
         self.repositorio = Repositorio()
 
@@ -98,7 +98,7 @@ class ClienteApp():
         self._cargar_clientes_guardados()
         self.loop.mainloop()
 
-    def _cargar_clientes_guardados(self):
+    def _cargar_clientes_guardados(self):# Carga los clientes guardados desde el log y los muestra en la tabla
         for cedula, nombre, telefono in cargar_clientes_desde_log():
             try:
                 cliente = Cliente(cedula, nombre, telefono)
@@ -107,7 +107,7 @@ class ClienteApp():
             except (CedulaInvalidaError, CedulaDuplicadaError):
                 pass
 
-    def registrar_cliente(self):
+    def registrar_cliente(self):# Registra un nuevo cliente, lo guarda en el repositorio y en el log, y lo muestra en la tabla
         try:
             cedula   = self.cedula_entry.get().strip()
             nombre   = self.nombre_entry.get().strip()
@@ -137,7 +137,7 @@ class ClienteApp():
             registrar_log(f"ERROR: {e}")
             messagebox.showerror("Error", str(e))
 
-    def volver(self):
+    def volver(self): # Cierra la ventana actual y vuelve al menú principal
         self.loop.destroy()
         from main import Main  
         Main()

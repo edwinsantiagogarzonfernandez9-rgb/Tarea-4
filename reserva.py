@@ -5,7 +5,7 @@ from excepciones import ReservaCanceladaError, ReservaError
 from logger import registrar_log, cargar_servicios_desde_log, cargar_clientes_desde_log
 
 
-class Reserva:
+class Reserva: #| Representa una reserva con un servicio, cantidad y cliente asociado
     def __init__(self, servicio, cantidad,cliente=None):
         self._servicio = servicio
         self._cantidad = cantidad
@@ -16,7 +16,7 @@ class Reserva:
     def cantidad(self): return self._cantidad
     @property
     def cliente(self): return self._cliente
-class ReservaApp():
+class ReservaApp(): # Aplicación principal para gestionar reservas
     def __init__(self):
         self.reservas = []
 
@@ -54,7 +54,6 @@ class ReservaApp():
         self.servicio_option = tk.OptionMenu(self.loop, self.servicio_var, *nombres)
         self.servicio_option.config(font=("Arial", 12), bg="#FFFFFF", fg="#000000", width=20)
         self.servicio_option.grid(row=2, column=1, padx=10, pady=10, sticky="w")
-        # ───────────────────────────────────────────────────
 
         tk.Label(self.loop, text="Cantidad:", font=("Arial", 15),
                  bg="#36506A", fg="#FFFFFF").grid(row=3, column=0, padx=10, pady=10, sticky="e")
@@ -94,7 +93,7 @@ class ReservaApp():
 
         self.loop.mainloop()
 
-    def crear_reserva(self):
+    def crear_reserva(self): # Crea una nueva reserva con el servicio, cantidad y cliente seleccionados, la agrega a la lista de reservas, la muestra en la tabla y la registra en el log
         try:
             servicio_nombre = self.servicio_var.get()
             cantidad_str = self.cantidad_entry.get()
@@ -127,7 +126,7 @@ class ReservaApp():
             registrar_log(f"ERROR ReservaCancelada: {e}")
             messagebox.showerror("Error", str(e))
 
-    def volver(self):
+    def volver(self): # Cierra la ventana de reservas y vuelve al menú principal
         self.loop.destroy()
         from main import Main
         Main()

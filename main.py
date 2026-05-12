@@ -3,7 +3,7 @@ import tkinter as tk
 from cliente import ClienteApp
 from servicio import ServicioApp
 from reserva import ReservaApp
-class Main():
+class Main(): # Aplicación principal con menú para acceder a clientes, servicios y reservas
     def __init__(self):
         self.loop = tk.Tk()
         self.loop.title("Software FJ")
@@ -42,15 +42,15 @@ class Main():
                   command=self.loop.destroy
                   ).pack(pady=6)
         self.loop.mainloop()
-    def abrir_clientes(self):
+    def abrir_clientes(self): # Abre la aplicación de gestión de clientes
         self.loop.destroy()
         ClienteApp()
 
-    def abrir_servicios(self):
+    def abrir_servicios(self): # Abre la aplicación de gestión de servicios
         self.loop.destroy()
         ServicioApp()
 
-    def abrir_reservas(self):
+    def abrir_reservas(self): # Abre la aplicación de gestión de reservas
         self.loop.destroy()
         ReservaApp()
 if __name__ == "__main__":
